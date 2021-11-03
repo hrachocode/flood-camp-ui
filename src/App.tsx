@@ -1,8 +1,14 @@
 import "./App.css";
-import Dashboard from "./pages/dashboard/Dashboard";
+import MainWrapper from "./components/main-wrapper/MainWrapper";
+import Router from "./router/Router";
+import { routes } from "./router/routing";
 
 const App: React.FC = () => {
-  return <Dashboard />;
+  return (
+    <MainWrapper>
+      <Router routes={routes} />
+    </MainWrapper>
+  );
 };
 
 export default App;
