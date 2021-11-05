@@ -7,12 +7,13 @@ import {
   StepLabel,
   Stepper,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateCompany from "../../components/form-steps/create-company/CreateCompnay";
 import CreateEAC from "../../components/form-steps/create-EAC/CreateEAC";
 import {
   countries,
   energyTypes,
+  regions,
 } from "../../components/form-steps/create-station/ceateStation.utils";
 import CreateStation from "../../components/form-steps/create-station/CreateStation";
 import {
@@ -22,25 +23,47 @@ import {
   StepperStyles,
 } from "./dashboard.styles";
 
-export interface IForm {
-  region: string;
-  dateOfExplotation: string;
-  energyType: string;
-  changeHandler: any;
-  country: string;
-  startDateOfCreation: string;
-  endDateOfCreation: string;
+interface ISignature {
+  [x: string]: string | number;
 }
 
+export interface IForm extends ISignature {
+  companyName: string;
+  companyRegisterNumber: string;
+  stationEnergyType: string;
+  stationName: string;
+  stationPlacement: string;
+  stationSupport: string;
+  stationDateOfExplotation: string;
+  stationCountry: string;
+  stationRegion: string;
+  eacStartDateOfCreation: string;
+  eacEndDateOfCreation: string;
+  eacAmountOfMwt: number;
+}
+
+const today = new Date().toISOString().split("T")[0];
+
+const initialState: IForm = {
+  companyName: "",
+  companyRegisterNumber: "",
+  stationDateOfExplotation: today,
+  stationEnergyType: energyTypes[0],
+  stationCountry: countries[0],
+  stationRegion: regions[countries[0]][0],
+  stationName: "",
+  stationPlacement: "",
+  stationSupport: "",
+  eacStartDateOfCreation: today,
+  eacEndDateOfCreation: today,
+  eacAmountOfMwt: 0,
+};
+
+const stepLabels: string[] = ["Create Company", "Create Station", "Create EAC"];
+
 const Dashboard: React.FC = () => {
-  const today = new Date().toISOString().split("T")[0];
-  const [form, setForm] = useState<IForm | Partial<IForm>>({
-    dateOfExplotation: today,
-    energyType: energyTypes[0],
-    country: countries[0],
-    startDateOfCreation: today,
-    endDateOfCreation: today,
-  });
+  const [form, setForm] = useState<IForm>(initialState);
+  const [error, setError] = useState<any>({});
   const [activeStep, setActiveStep] = useState<number>(0);
 
   const changeHandler = (e: SelectChangeEvent<string>): void =>
@@ -50,35 +73,60 @@ const Dashboard: React.FC = () => {
     console.log("submitted");
   };
 
+  const notValidState = (value: string | number): boolean =>
+    value === 0 || value === "";
+
   const handleNext = (): void => {
     if (activeStep === stepLabels.length - 1) {
       submitForm();
       return;
     }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+    const notValidValues = Object.keys(form)
+      .filter((i) => {
+        return i.includes(stepLabels[activeStep].split(" ")[1].toLowerCase());
+      })
+      .reduce((acc: any, i: string) => {
+        notValidState(form[i]) &&
+          setError((prev: any) => ({ ...prev, [i]: true }));
+
+        return [...acc, form[i]];
+      }, [])
+      .filter((i) => !i);
+
+    if (!notValidValues.length)
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = (): void => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const stepLabels: string[] = [
-    "Create Station",
-    "Create Company",
-    "Create EAC",
-  ];
   const isLastStep: boolean = activeStep === stepLabels.length - 1;
   const findContent = (index: number): JSX.Element | undefined => {
     switch (index) {
       case 0:
-        return <CreateStation form={form} changeHandler={changeHandler} />;
+        return (
+          <CreateCompany
+            companyName={form.companyName}
+            companyRegisterNumber={form.companyRegisterNumber}
+            changeHandler={changeHandler}
+            error={error}
+          />
+        );
       case 1:
-        return <CreateCompany />;
+        return (
+          <CreateStation
+            form={form}
+            changeHandler={changeHandler}
+            error={error}
+          />
+        );
       case 2:
         return (
           <CreateEAC
-            startDateOfCreation={form?.startDateOfCreation}
-            endDateOfCreation={form?.endDateOfCreation}
+            eacStartDateOfCreation={form?.eacStartDateOfCreation}
+            eacEndDateOfCreation={form?.eacEndDateOfCreation}
             changeHandler={changeHandler}
           />
         );
@@ -86,6 +134,19 @@ const Dashboard: React.FC = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    const keys: string[] = Object.keys(error);
+    if (keys.length) {
+      keys.forEach((i) => {
+        !notValidState(form[i]) &&
+          setError((prev: any) => {
+            delete prev[i];
+            return prev;
+          });
+      });
+    }
+  }, [error, form]);
 
   return (
     <Container sx={MainContainerStyles}>

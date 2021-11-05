@@ -12,3 +12,7 @@ export const statics = {
     preFixOfText: "Already",
   },
 };
+
+export const injectAccessTokenTOLocalStorage = (token: string): void => {
+  localStorage.setItem("accessToken", token);
+};

@@ -8,13 +8,13 @@ import {
 } from "../create-station/createStation.styles";
 
 interface ICreateEACProps
-  extends Partial<Pick<IForm, "startDateOfCreation" | "endDateOfCreation">> {
+  extends Pick<IForm, "eacStartDateOfCreation" | "eacEndDateOfCreation"> {
   changeHandler: (e: any) => void;
 }
 
 const CreateEAC: React.FC<ICreateEACProps> = ({
-  startDateOfCreation,
-  endDateOfCreation,
+  eacStartDateOfCreation,
+  eacEndDateOfCreation,
   changeHandler,
 }) => {
   return (
@@ -29,7 +29,7 @@ const CreateEAC: React.FC<ICreateEACProps> = ({
             <TextField
               type="date"
               sx={DatePickerStyles}
-              value={startDateOfCreation}
+              value={eacStartDateOfCreation}
               name="startDateOfCreation"
               InputLabelProps={{
                 shrink: true,
@@ -44,15 +44,15 @@ const CreateEAC: React.FC<ICreateEACProps> = ({
             <TextField
               type="date"
               value={
-                new Date(`${startDateOfCreation}`).getTime() >
-                new Date(`${endDateOfCreation}`).getTime()
-                  ? startDateOfCreation
-                  : endDateOfCreation
+                new Date(`${eacStartDateOfCreation}`).getTime() >
+                new Date(`${eacEndDateOfCreation}`).getTime()
+                  ? eacStartDateOfCreation
+                  : eacEndDateOfCreation
               }
               sx={DatePickerStyles}
               name="endDateOfCreation"
               inputProps={{
-                min: startDateOfCreation,
+                min: eacStartDateOfCreation,
               }}
               InputLabelProps={{
                 shrink: true,

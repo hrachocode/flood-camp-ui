@@ -21,11 +21,21 @@ import { IForm } from "../../../pages/dashboard/Dashboard";
 interface ICreateStation {
   form: Partial<IForm>;
   changeHandler: (e: any) => void;
+  error: any;
 }
 
 const CreateStation: React.FC<ICreateStation> = ({
-  form: { dateOfExplotation, region, country, energyType },
+  form: {
+    stationDateOfExplotation,
+    stationRegion,
+    stationCountry,
+    stationEnergyType,
+    stationName,
+    stationPlacement,
+    stationSupport,
+  },
   changeHandler,
+  error,
 }) => {
   const today = new Date();
 
@@ -39,8 +49,8 @@ const CreateStation: React.FC<ICreateStation> = ({
 
         <Select
           labelId="energySelect"
-          value={energyType}
-          name={"energyType"}
+          value={stationEnergyType}
+          name={"stationEnergyType"}
           onChange={changeHandler}
           sx={SelectStyles}
           variant="filled"
@@ -53,21 +63,41 @@ const CreateStation: React.FC<ICreateStation> = ({
             );
           })}
         </Select>
-        <TextField label="Station name" variant="filled" sx={TextStyles} />
-        <TextField label="Station placement" variant="filled" sx={TextStyles} />
+        <TextField
+          label="Station name"
+          variant="filled"
+          sx={TextStyles}
+          value={stationName}
+          onChange={changeHandler}
+          name="stationName"
+          error={error?.stationName}
+        />
+        <TextField
+          label="Station placement"
+          variant="filled"
+          sx={TextStyles}
+          value={stationPlacement}
+          onChange={changeHandler}
+          name="stationPlacement"
+          error={error?.stationPlacement}
+        />
         <TextField
           label=" Support to station from government"
           variant="filled"
           sx={TextStyles}
+          value={stationSupport}
+          name="stationSupport"
+          onChange={changeHandler}
+          error={error?.stationSupport}
         />
         <InputLabel sx={{ color: colorForText }}>
           Date of start exploitation
         </InputLabel>
         <TextField
           type="date"
-          value={dateOfExplotation}
+          value={stationDateOfExplotation}
           sx={DatePickerStyles}
-          name="dateOfExplotation"
+          name="stationDateOfExplotation"
           inputProps={{
             max: today.toISOString().split("T")[0],
           }}
@@ -79,14 +109,14 @@ const CreateStation: React.FC<ICreateStation> = ({
         <Grid container>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel id="country" sx={{ color: colorForText }}>
-                Country
+              <InputLabel id="stationCountry" sx={{ color: colorForText }}>
+                stationCountry
               </InputLabel>
 
               <Select
-                labelId="country"
-                value={country}
-                name="country"
+                labelId="stationCountry"
+                value={stationCountry}
+                name="stationCountry"
                 onChange={changeHandler}
                 sx={SelectHalfStyles}
                 variant="filled"
@@ -103,21 +133,23 @@ const CreateStation: React.FC<ICreateStation> = ({
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel id="region" sx={{ color: "#fff" }}>
-                Region
+              <InputLabel id="stationRegion" sx={{ color: colorForText }}>
+                stationRegion
               </InputLabel>
-
               <Select
-                labelId="region"
+                labelId="stationRegion"
                 onChange={changeHandler}
-                value={region || (country && regions[country][0])}
-                name="region"
-                disabled={!country}
+                value={
+                  stationRegion ||
+                  (stationCountry && regions[stationCountry][0])
+                }
+                name="stationRegion"
+                disabled={!stationCountry}
                 sx={SelectHalfStyles}
                 variant="filled"
               >
-                {country &&
-                  regions[country].map((el: string, idx: number) => {
+                {stationCountry &&
+                  regions[stationCountry].map((el: string, idx: number) => {
                     return (
                       <MenuItem value={el} key={idx}>
                         {el}
