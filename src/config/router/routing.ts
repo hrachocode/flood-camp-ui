@@ -19,6 +19,20 @@ export const routes: IRoute[] = [
     private: true,
   },
   {
+    path: "/create-station",
+    exact: true,
+    component: lazy(() => import("../../pages/dashboard/Dashboard")),
+    fallback: null,
+    private: true,
+  },
+  {
+    path: "/create-eac",
+    exact: true,
+    component: lazy(() => import("../../pages/dashboard/Dashboard")),
+    fallback: null,
+    private: true,
+  },
+  {
     path: "/login",
     exact: true,
     component: lazy(() => import("../../pages/auth/Auth")),

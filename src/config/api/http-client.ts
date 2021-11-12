@@ -12,6 +12,19 @@ const headers: any = {
   "Content-Type": "application/json",
 };
 
+const injectToken = (config: AxiosRequestConfig): AxiosRequestConfig => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    if (token !== null && config && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 class HttpClient {
   private instance: AxiosInstance | null = null;
 
@@ -31,6 +44,10 @@ class HttpClient {
         const { response } = error;
         return this.handleError(response);
       }
+    );
+
+    http.interceptors.request.use(injectToken, (error) =>
+      Promise.reject(error)
     );
 
     this.instance = http;
@@ -73,15 +90,12 @@ class HttpClient {
     return this.http.delete<T, R>(url, config);
   }
 
-  // Handle global app errors
-  // We can handle generic app errors depending on the status code
   private async handleError(error: any) {
     if (!error) return;
     const { status } = error;
 
     switch (status) {
       case StatusCode.InternalServerError: {
-        // Handle InternalServerError
         break;
       }
       case StatusCode.Forbidden: {
@@ -91,7 +105,6 @@ class HttpClient {
         break;
       }
       case StatusCode.TooManyRequests: {
-        // Handle TooManyRequests
         break;
       }
     }

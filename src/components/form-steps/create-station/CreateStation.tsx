@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import {
   FormControl,
   Grid,
@@ -6,6 +6,8 @@ import {
   MenuItem,
   Select,
   TextField,
+  Button,
+  SelectChangeEvent,
 } from "@mui/material";
 import { countries, energyTypes, regions } from "./ceateStation.utils";
 import {
@@ -16,28 +18,64 @@ import {
   TextStyles,
 } from "./createStation.styles";
 import Title from "../../texts/Title";
-import { IForm } from "../../../pages/dashboard/Dashboard";
+import { ISignature } from "../../../pages/dashboard/Dashboard";
+import { useState } from "react";
+import { postCreateStation } from "../../../config/api/api.service";
 
-interface ICreateStation {
-  form: Partial<IForm>;
-  changeHandler: (e: any) => void;
-  error: any;
+interface IForm extends ISignature {
+  stationEnergyType: string;
+  stationName: string;
+  stationPlacement: string;
+  stationSupport: string;
+  stationDateOfExplotation: string;
+  stationCountry: string;
+  stationRegion: string;
 }
 
-const CreateStation: React.FC<ICreateStation> = ({
-  form: {
-    stationDateOfExplotation,
-    stationRegion,
-    stationCountry,
-    stationEnergyType,
-    stationName,
-    stationPlacement,
-    stationSupport,
-  },
-  changeHandler,
-  error,
-}) => {
+const today = new Date().toISOString().split("T")[0];
+
+const initialState: IForm = {
+  stationDateOfExplotation: today,
+  stationEnergyType: energyTypes[0],
+  stationCountry: countries[0].value,
+  stationRegion: regions[countries[0].value][0].id,
+  stationName: "",
+  stationPlacement: "",
+  stationSupport: "",
+};
+
+const CreateStation: React.FC = () => {
   const today = new Date();
+
+  const [form, setForm] = useState<IForm>(initialState);
+
+  const changeHandler = (
+    e:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>
+  ): void =>
+    setForm((prev) => {
+      if (e.target.name === "stationCountry") {
+        prev.stationRegion = regions[e.target.value][0].id;
+      }
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+
+  async function submitForm() {
+    const finded = countries.find((i) => i.value === form.stationCountry);
+
+    if (finded) {
+      await postCreateStation({
+        name: form.stationName,
+        placement: form.stationPlacement,
+        stationEnergyType: form.stationEnergyType,
+        supportGovernment: form.stationSupport,
+        exploitationStart: new Date(form.stationDateOfExplotation),
+        countryId: finded.id,
+        regionId: form.stationRegion,
+      });
+    }
+  }
 
   return (
     <>
@@ -49,7 +87,7 @@ const CreateStation: React.FC<ICreateStation> = ({
 
         <Select
           labelId="energySelect"
-          value={stationEnergyType}
+          value={form.stationEnergyType}
           name={"stationEnergyType"}
           onChange={changeHandler}
           sx={SelectStyles}
@@ -67,35 +105,32 @@ const CreateStation: React.FC<ICreateStation> = ({
           label="Station name"
           variant="filled"
           sx={TextStyles}
-          value={stationName}
+          value={form.stationName}
           onChange={changeHandler}
           name="stationName"
-          error={error?.stationName}
         />
         <TextField
           label="Station placement"
           variant="filled"
           sx={TextStyles}
-          value={stationPlacement}
+          value={form.stationPlacement}
           onChange={changeHandler}
           name="stationPlacement"
-          error={error?.stationPlacement}
         />
         <TextField
           label=" Support to station from government"
           variant="filled"
           sx={TextStyles}
-          value={stationSupport}
+          value={form.stationSupport}
           name="stationSupport"
           onChange={changeHandler}
-          error={error?.stationSupport}
         />
         <InputLabel sx={{ color: colorForText }}>
           Date of start exploitation
         </InputLabel>
         <TextField
           type="date"
-          value={stationDateOfExplotation}
+          value={form.stationDateOfExplotation}
           sx={DatePickerStyles}
           name="stationDateOfExplotation"
           inputProps={{
@@ -110,21 +145,21 @@ const CreateStation: React.FC<ICreateStation> = ({
           <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel id="stationCountry" sx={{ color: colorForText }}>
-                stationCountry
+                Station Country
               </InputLabel>
 
               <Select
                 labelId="stationCountry"
-                value={stationCountry}
+                value={form.stationCountry}
                 name="stationCountry"
                 onChange={changeHandler}
                 sx={SelectHalfStyles}
                 variant="filled"
               >
-                {countries.map((el, idx) => {
+                {countries.map((el) => {
                   return (
-                    <MenuItem value={el} key={idx}>
-                      {el}
+                    <MenuItem value={el.value} key={el.id}>
+                      {el.value}
                     </MenuItem>
                   );
                 })}
@@ -134,25 +169,22 @@ const CreateStation: React.FC<ICreateStation> = ({
           <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel id="stationRegion" sx={{ color: colorForText }}>
-                stationRegion
+                Station Region
               </InputLabel>
               <Select
                 labelId="stationRegion"
                 onChange={changeHandler}
-                value={
-                  stationRegion ||
-                  (stationCountry && regions[stationCountry][0])
-                }
+                value={form.stationRegion}
                 name="stationRegion"
-                disabled={!stationCountry}
+                disabled={!form.stationCountry}
                 sx={SelectHalfStyles}
                 variant="filled"
               >
-                {stationCountry &&
-                  regions[stationCountry].map((el: string, idx: number) => {
+                {form.stationCountry &&
+                  regions[form.stationCountry].map((el: any, idx: number) => {
                     return (
-                      <MenuItem value={el} key={idx}>
-                        {el}
+                      <MenuItem value={el.id} key={idx}>
+                        {el.value}
                       </MenuItem>
                     );
                   })}
@@ -160,7 +192,9 @@ const CreateStation: React.FC<ICreateStation> = ({
             </FormControl>
           </Grid>
         </Grid>
-        {/* <Button sx={ButtonStyles}>Submit</Button> */}
+        <Grid container justifyContent="flex-end" sx={{ marginTop: "15px" }}>
+          <Button onClick={submitForm}>Submit</Button>
+        </Grid>
       </Grid>
     </>
   );

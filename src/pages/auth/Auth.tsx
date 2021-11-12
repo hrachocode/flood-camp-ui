@@ -52,8 +52,10 @@ const Auth = () => {
           username: form.email,
           password: form.password,
         });
-        injectAccessTokenTOLocalStorage(res.accessToken);
-        history.push("/");
+        if (res?.accessToken) {
+          injectAccessTokenTOLocalStorage(res.accessToken);
+          history.push("/");
+        }
       }
     }
   };
