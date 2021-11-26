@@ -83,6 +83,14 @@ class HttpClient {
     return this.http.put<T, R>(url, data, config);
   }
 
+  patch<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: T,
+    config?: AxiosRequestConfig
+  ): Promise<R> {
+    return this.http.patch<T, R>(url, data, config);
+  }
+
   delete<T = any, R = AxiosResponse<T>>(
     url: string,
     config?: AxiosRequestConfig
@@ -102,6 +110,8 @@ class HttpClient {
         break;
       }
       case StatusCode.Unauthorized: {
+        localStorage.clear();
+        window.location.href = "/login";
         break;
       }
       case StatusCode.TooManyRequests: {

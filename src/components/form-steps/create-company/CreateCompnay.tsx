@@ -1,5 +1,5 @@
 import { Grid, TextField, Button } from "@mui/material";
-import { ISignature } from "../../../pages/dashboard/Dashboard";
+import Dashboard, { ISignature } from "../../../pages/dashboard/Dashboard";
 import Title from "../../texts/Title";
 import { TextStyles } from "../create-station/createStation.styles";
 import { ChangeEvent, useState } from "react";
@@ -24,7 +24,6 @@ const CreateCompany: React.FC = () => {
     });
 
   async function submitForm() {
-    console.log(form);
     await postCreateCompany({
       name: form.companyName,
       registerNumber: form.companyRegisterNumber,
@@ -32,7 +31,7 @@ const CreateCompany: React.FC = () => {
   }
 
   return (
-    <>
+    <Dashboard>
       <Title text="Create Company" />
       <Grid container direction="column" gap={3}>
         <TextField
@@ -53,7 +52,7 @@ const CreateCompany: React.FC = () => {
       <Grid container justifyContent="flex-end" sx={{ marginTop: "15px" }}>
         <Button onClick={submitForm}>Submit</Button>
       </Grid>
-    </>
+    </Dashboard>
   );
 };
 

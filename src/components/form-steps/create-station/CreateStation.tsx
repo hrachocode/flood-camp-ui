@@ -18,7 +18,7 @@ import {
   TextStyles,
 } from "./createStation.styles";
 import Title from "../../texts/Title";
-import { ISignature } from "../../../pages/dashboard/Dashboard";
+import Dashboard, { ISignature } from "../../../pages/dashboard/Dashboard";
 import { useState } from "react";
 import { postCreateStation } from "../../../config/api/api.service";
 
@@ -78,7 +78,7 @@ const CreateStation: React.FC = () => {
   }
 
   return (
-    <>
+    <Dashboard>
       <Title text="Create Station" />
       <Grid container sx={{ gap: 2 }} direction={"column"}>
         <InputLabel id="energySelect" sx={{ color: colorForText }}>
@@ -196,7 +196,7 @@ const CreateStation: React.FC = () => {
           <Button onClick={submitForm}>Submit</Button>
         </Grid>
       </Grid>
-    </>
+    </Dashboard>
   );
 };
 

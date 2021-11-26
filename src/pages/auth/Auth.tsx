@@ -93,6 +93,7 @@ const Auth = () => {
           label="Enter password"
           sx={TextStyles}
           value={form.password}
+          type="password"
           name="password"
           onChange={changeHandler}
         />

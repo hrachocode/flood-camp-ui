@@ -1,10 +1,15 @@
 import { ComponentType, lazy, LazyExoticComponent, ReactNode } from "react";
+import CreateCompany from "../../components/form-steps/create-company/CreateCompnay";
+import CreateEAC from "../../components/form-steps/create-EAC/CreateEAC";
+import CreateStation from "../../components/form-steps/create-station/CreateStation";
+import ListOfBids from "../../components/table/ListOfBids";
+import ListOfEacs from "../../components/table/ListOfEacs";
 
 export interface IRoute {
   path: string;
   exact?: boolean;
   fallback?: NonNullable<ReactNode> | null;
-  component?: LazyExoticComponent<ComponentType<any>>;
+  component?: LazyExoticComponent<ComponentType<any>> | ComponentType;
   routes?: IRoute[];
   redirect?: string;
   private?: boolean;
@@ -14,21 +19,35 @@ export const routes: IRoute[] = [
   {
     path: "/",
     exact: true,
-    component: lazy(() => import("../../pages/dashboard/Dashboard")),
+    component: ListOfEacs,
+    fallback: null,
+    private: true,
+  },
+  {
+    path: "/exchange",
+    exact: true,
+    component: ListOfBids,
+    fallback: null,
+    private: true,
+  },
+  {
+    path: "/create-company",
+    exact: true,
+    component: CreateCompany,
     fallback: null,
     private: true,
   },
   {
     path: "/create-station",
     exact: true,
-    component: lazy(() => import("../../pages/dashboard/Dashboard")),
+    component: CreateStation,
     fallback: null,
     private: true,
   },
   {
     path: "/create-eac",
     exact: true,
-    component: lazy(() => import("../../pages/dashboard/Dashboard")),
+    component: CreateEAC,
     fallback: null,
     private: true,
   },

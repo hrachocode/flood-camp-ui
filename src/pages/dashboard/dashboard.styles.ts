@@ -3,7 +3,7 @@ import { SxProps } from "@mui/system";
 export const MainContainerStyles: SxProps = {
   width: "100%",
   height: "100%",
-  mt:'50px'
+  mt: "50px",
 };
 
 export const MainGridStyles: SxProps = {
@@ -13,7 +13,7 @@ export const MainGridStyles: SxProps = {
 };
 
 export const MainInnerContainer: SxProps = {
-  backgroundColor: "rgba(0, 0, 0, 0.6)",
+  backgroundColor: "rgba(0, 0, 0, 0.68)",
   padding: "20px",
 };
 

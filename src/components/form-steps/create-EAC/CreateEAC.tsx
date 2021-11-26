@@ -5,7 +5,7 @@ import {
   Button,
   SelectChangeEvent,
 } from "@mui/material";
-import { ISignature } from "../../../pages/dashboard/Dashboard";
+import Dashboard, { ISignature } from "../../../pages/dashboard/Dashboard";
 import Title from "../../texts/Title";
 import {
   colorForText,
@@ -38,13 +38,10 @@ const CreateEAC: React.FC = () => {
       | SelectChangeEvent<string>
   ): void =>
     setForm((prev) => {
-      console.log( e.target.value);
-      
       return { ...prev, [e.target.name]: e.target.value };
     });
 
   async function submitForm() {
-    console.log(form);
     await postCreateEAC({
       creationEnergyStartDate: new Date(form.eacStartDateOfCreation),
       creationEnergyEndDate: new Date(form.eacEndDateOfCreation),
@@ -53,7 +50,7 @@ const CreateEAC: React.FC = () => {
   }
 
   return (
-    <>
+    <Dashboard>
       <Title text="Create EAC" />
       <Grid container gap={3}>
         <Grid container gap={3}>
@@ -114,7 +111,7 @@ const CreateEAC: React.FC = () => {
           <Button onClick={submitForm}>Submit</Button>
         </Grid>
       </Grid>
-    </>
+    </Dashboard>
   );
 };
 

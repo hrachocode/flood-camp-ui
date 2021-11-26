@@ -13,6 +13,12 @@ const Navbar = () => {
     <AppBar sx={NavbarMainStyle}>
       <Grid container alignItems="center" sx={NavbarLinksWrapper}>
         <Link to="/">
+          <Typography variant="h6">My EACs</Typography>
+        </Link>
+        <Link to="/exchange">
+          <Typography variant="h6">Exchange</Typography>
+        </Link>
+        <Link to="/create-company">
           <Typography variant="h6">Create Company</Typography>
         </Link>
         <Link to="/create-station">

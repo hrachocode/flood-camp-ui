@@ -11,7 +11,7 @@ export interface ICreateCompany {
 export interface ICreateStation {
   name: string;
   placement: string;
-  stationEnergyType:string;
+  stationEnergyType: string;
   supportGovernment: string;
   exploitationStart: Date;
   countryId: string; //temporary solutions, should be number
@@ -22,4 +22,9 @@ export interface ICreateEAC {
   creationEnergyStartDate: Date;
   creationEnergyEndDate: Date;
   energyAmount: number;
+}
+
+export interface IChangeAskAuctionState {
+  isAsk: boolean;
+  price: number;
 }
