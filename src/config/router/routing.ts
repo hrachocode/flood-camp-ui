@@ -2,7 +2,6 @@ import { ComponentType, lazy, LazyExoticComponent, ReactNode } from "react";
 import CreateCompany from "../../components/form-steps/create-company/CreateCompnay";
 import CreateEAC from "../../components/form-steps/create-EAC/CreateEAC";
 import CreateStation from "../../components/form-steps/create-station/CreateStation";
-import ListOfBids from "../../components/table/ListOfBids";
 import ListOfEacs from "../../components/table/ListOfEacs";
 
 export interface IRoute {
@@ -20,13 +19,6 @@ export const routes: IRoute[] = [
     path: "/",
     exact: true,
     component: ListOfEacs,
-    fallback: null,
-    private: true,
-  },
-  {
-    path: "/exchange",
-    exact: true,
-    component: ListOfBids,
     fallback: null,
     private: true,
   },

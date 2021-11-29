@@ -10,12 +10,14 @@ import {
 } from "@mui/material";
 import { SxProps } from "@mui/system";
 import { Dispatch, SetStateAction, useState } from "react";
-import { changeEACAskAucitonState } from "../../../config/api/api.service";
-import { IChangeAskAuctionState } from "../../../config/api/api.types";
+import { useDispatch } from "react-redux";
+import { changeEACAskAucitonState } from "../../../../config/api/api.service";
+import { IChangeAskAuctionState } from "../../../../config/api/api.types";
+import { upadateEac } from "../../../../config/redux/main.slice";
 import {
   colorForText,
   TextStyles,
-} from "../../form-steps/create-station/createStation.styles";
+} from "../../../form-steps/create-station/createStation.styles";
 
 export const ModalStyles: SxProps = {
   minHeight: 400,
@@ -43,13 +45,11 @@ export interface IExchagneModal {
   type: boolean;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  setChecked: Dispatch<SetStateAction<boolean>>;
 }
 
 const ExchangeModal: React.FC<IExchagneModal> = ({
   isOpen,
   setIsOpen,
-  setChecked,
   value,
   type,
   price,
@@ -59,6 +59,7 @@ const ExchangeModal: React.FC<IExchagneModal> = ({
   };
   const [form, setForm] = useState<IExchangeForm>(initFormState);
   const [toggleExchange, setToggleExchange] = useState<boolean>(type);
+  const dispatch = useDispatch();
 
   const closeHandler = () => {
     setForm(initFormState);
@@ -72,7 +73,7 @@ const ExchangeModal: React.FC<IExchagneModal> = ({
 
   const submitHandler = async () => {
     const body: IChangeAskAuctionState = {
-      price: form.priceOfExchange,
+      price: +form.priceOfExchange,
       isAsk: toggleExchange,
     };
     if (!toggleExchange) {
@@ -83,7 +84,7 @@ const ExchangeModal: React.FC<IExchagneModal> = ({
     const res = await changeEACAskAucitonState(value, body);
 
     if (res) {
-      setChecked(toggleExchange);
+      dispatch(upadateEac({ type: "userEACs", item: res }));
       setIsOpen(false);
     }
   };

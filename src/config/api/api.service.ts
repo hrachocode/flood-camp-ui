@@ -1,9 +1,12 @@
 import {
   ALL_AUCTIONS,
   ASK_AUCTION_STATE,
+  BINDED_ASKS_TO_EACS,
+  CONFIRM_BID,
   CREATE_COMPANY,
   CREATE_EAC,
   CREATE_STATION,
+  MAKE_BID,
   SIGN_IN,
   SIGN_UP,
 } from "./api.endpoints";
@@ -13,6 +16,7 @@ import {
   ICreateCompany,
   ICreateEAC,
   ICreateStation,
+  IMakeBid,
 } from "./api.types";
 import { httpClient } from "./http-client";
 
@@ -59,5 +63,20 @@ export const changeEACAskAucitonState = async (
 
 export const getAllEACsInAuctions = async () => {
   const res = await httpClient.get(`${CREATE_EAC}${ALL_AUCTIONS}`);
+  return res?.data;
+};
+
+export const getBindedAsks = async (id: number) => {
+  const res = await httpClient.get(`${CREATE_EAC}${BINDED_ASKS_TO_EACS}/${id}`);
+  return res?.data;
+};
+
+export const confirmBidToEAC = async (id: number) => {
+  const res = await httpClient.patch(`${CREATE_EAC}${CONFIRM_BID}/${id}`);
+  return res?.data;
+};
+
+export const makeBid = async (body: IMakeBid) => {
+  const res = await httpClient.post(`${CREATE_EAC}${MAKE_BID}`, body);
   return res?.data;
 };

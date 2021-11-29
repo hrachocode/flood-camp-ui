@@ -28,3 +28,8 @@ export interface IChangeAskAuctionState {
   isAsk: boolean;
   price: number;
 }
+
+export interface IMakeBid {
+  eacsId: number;
+  price: number;
+}

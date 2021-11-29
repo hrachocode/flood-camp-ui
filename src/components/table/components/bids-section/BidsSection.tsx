@@ -1,14 +1,23 @@
 import { ToggleButton } from "@mui/material";
+import { SxProps } from "@mui/system";
 import { useState } from "react";
-import { IEAC } from "../../ListOfEacs";
-import { SToggleBtn } from "../OnExchangeSection";
+import { colorForText } from "../../../form-steps/create-station/createStation.styles";
+import { IEAC, VariantOfEACsType } from "../../ListOfEacs";
+import { SToggleBtn } from "../exchange-section/OnExchangeSection";
 import BidsModal from "./BidsModal";
 
 interface IBidSection {
   item: IEAC;
+  variant: VariantOfEACsType;
 }
 
-const BidsSection: React.FC<IBidSection> = ({ item }) => {
+const SToggleBtnWithDisable: SxProps = {
+  "&[aria-pressed='true']:not(:disabled)": {
+    color: colorForText,
+  },
+};
+
+const BidsSection: React.FC<IBidSection> = ({ item, variant }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -17,12 +26,17 @@ const BidsSection: React.FC<IBidSection> = ({ item }) => {
         value={item.id}
         onChange={() => setIsOpen(true)}
         selected={true}
-        disabled={!item.isAsk}
-        sx={SToggleBtn}
+        disabled={item.isArchive || !item.isAsk}
+        sx={variant === "allEACs" ? SToggleBtn : SToggleBtnWithDisable}
       >
-        Bids
+        {item.isArchive && variant === "allEACs" ? "Archivated" : "Bids"}
       </ToggleButton>
-      <BidsModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <BidsModal
+        id={item.id}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        variant={variant}
+      />
     </>
   );
 };

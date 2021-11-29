@@ -14,15 +14,19 @@ import {
 } from "@mui/material";
 import { SxProps } from "@mui/system";
 import React, { useEffect, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllEACsInAuctions, getEACs } from "../../config/api/api.service";
 import { ICreateEAC, IChangeAskAuctionState } from "../../config/api/api.types";
+import { setEacs } from "../../config/redux/main.slice";
+import { RootState } from "../../config/redux/store";
 import Dashboard from "../../pages/dashboard/Dashboard";
 import { colorForText } from "../form-steps/create-station/createStation.styles";
 import BidsSection from "./components/bids-section/BidsSection";
-import OnExchangeSection from "./components/OnExchangeSection";
+import OnExchangeSection from "./components/exchange-section/OnExchangeSection";
 
 export interface IEAC extends ICreateEAC, IChangeAskAuctionState {
   id: number;
+  isArchive: boolean;
 }
 
 export type VariantOfEACsType = "userEACs" | "allEACs";
@@ -34,11 +38,12 @@ export const TableContainerStyles: SxProps = {
 };
 
 const ListOfEacs = () => {
+  const data = useSelector((state: RootState) => state.main.eacs);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
-  const [data, setData] = useState<{ userEACs: IEAC[]; allEACs: IEAC[] }>();
   const [variantOfEACs, setVariantOfEACs] =
     useState<VariantOfEACsType>("userEACs");
+  const dispatch = useDispatch();
 
   const headersOfTable: string[] = useMemo(() => {
     return [
@@ -46,7 +51,7 @@ const ListOfEacs = () => {
       "Start date of energy creation",
       "End date of energy creation",
       "Amount of energy in MWh",
-      variantOfEACs === "userEACs" ? "Push it to auction" : "Price",
+      variantOfEACs === "userEACs" ? "Exchange Status" : "Ask",
       "Made Bids",
     ];
   }, [variantOfEACs]);
@@ -58,10 +63,15 @@ const ListOfEacs = () => {
         await getAllEACsInAuctions(),
       ]);
       if (res && res.length) {
-        setData({ userEACs: res[0], allEACs: res[1] });
+        dispatch(
+          setEacs({
+            userEACs: res[0],
+            allEACs: res[1],
+          })
+        );
       }
     })();
-  }, [variantOfEACs]);
+  }, [dispatch]);
 
   return (
     <Dashboard>
@@ -110,7 +120,7 @@ const ListOfEacs = () => {
                           )}
                         </TableCell>
                         <TableCell>
-                          <BidsSection item={i} />
+                          <BidsSection item={i} variant={variantOfEACs} />
                         </TableCell>
                       </TableRow>
                     ))}
