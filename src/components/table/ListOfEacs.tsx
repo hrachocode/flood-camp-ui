@@ -79,8 +79,12 @@ const ListOfEacs = () => {
         value={variantOfEACs}
         onChange={(_, value) => setVariantOfEACs(value)}
       >
-        <Tab label="My EAC's" value={"userEACs"} />
-        <Tab label="Whole EAC's in auction" value={"allEACs"} />
+        <Tab sx={{ color: colorForText }} label="My EAC's" value={"userEACs"} />
+        <Tab
+          sx={{ color: colorForText }}
+          label="Whole EAC's in auction"
+          value={"allEACs"}
+        />
       </Tabs>
       {data ? (
         <>

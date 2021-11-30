@@ -4,6 +4,8 @@ import {
   TextField,
   Button,
   SelectChangeEvent,
+  CircularProgress,
+  Typography,
 } from "@mui/material";
 import Dashboard, { ISignature } from "../../../pages/dashboard/Dashboard";
 import Title from "../../texts/Title";
@@ -14,6 +16,7 @@ import {
 } from "../create-station/createStation.styles";
 import { ChangeEvent, useState } from "react";
 import { postCreateEAC } from "../../../config/api/api.service";
+import { useHistory } from "react-router-dom";
 
 interface IForm extends ISignature {
   eacStartDateOfCreation: string;
@@ -31,6 +34,9 @@ const initialState: IForm = {
 
 const CreateEAC: React.FC = () => {
   const [form, setForm] = useState<IForm>(initialState);
+  const [loading, setLoading] = useState(false);
+
+  const history = useHistory();
 
   const changeHandler = (
     e:
@@ -42,11 +48,14 @@ const CreateEAC: React.FC = () => {
     });
 
   async function submitForm() {
+    setLoading(true);
     await postCreateEAC({
       creationEnergyStartDate: new Date(form.eacStartDateOfCreation),
       creationEnergyEndDate: new Date(form.eacEndDateOfCreation),
       energyAmount: form.eacAmountOfMwt,
     });
+    setLoading(false);
+    history.push("/");
   }
 
   return (
@@ -107,8 +116,20 @@ const CreateEAC: React.FC = () => {
             }}
           />
         </Grid>
-        <Grid container justifyContent="flex-end" sx={{ marginTop: "15px" }}>
-          <Button onClick={submitForm}>Submit</Button>
+        <Grid
+          container
+          justifyContent="space-between"
+          sx={{ marginTop: "15px", color: "#fff" }}
+        >
+          <Typography></Typography>
+          {loading && <Typography>Please wait</Typography>}
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Button sx={{ border: "1px solid " }} onClick={submitForm}>
+              Submit
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Dashboard>

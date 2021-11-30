@@ -15,6 +15,7 @@ const SToggleBtnWithDisable: SxProps = {
   "&[aria-pressed='true']:not(:disabled)": {
     color: colorForText,
   },
+  color: `${colorForText} !important`,
 };
 
 const BidsSection: React.FC<IBidSection> = ({ item, variant }) => {

@@ -8,6 +8,7 @@ import {
   TextField,
   Button,
   SelectChangeEvent,
+  CircularProgress,
 } from "@mui/material";
 import { countries, energyTypes, regions } from "./ceateStation.utils";
 import {
@@ -21,6 +22,8 @@ import Title from "../../texts/Title";
 import Dashboard, { ISignature } from "../../../pages/dashboard/Dashboard";
 import { useState } from "react";
 import { postCreateStation } from "../../../config/api/api.service";
+import { useHistory } from "react-router-dom";
+import ErrorMessage from "../../error-message/ErrorMessage";
 
 interface IForm extends ISignature {
   stationEnergyType: string;
@@ -48,6 +51,10 @@ const CreateStation: React.FC = () => {
   const today = new Date();
 
   const [form, setForm] = useState<IForm>(initialState);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState([]);
+
+  const history = useHistory();
 
   const changeHandler = (
     e:
@@ -62,18 +69,28 @@ const CreateStation: React.FC = () => {
     });
 
   async function submitForm() {
+    setLoading(true);
+
     const finded = countries.find((i) => i.value === form.stationCountry);
 
     if (finded) {
-      await postCreateStation({
-        name: form.stationName,
-        placement: form.stationPlacement,
-        stationEnergyType: form.stationEnergyType,
-        supportGovernment: form.stationSupport,
-        exploitationStart: new Date(form.stationDateOfExplotation),
-        countryId: finded.id,
-        regionId: form.stationRegion,
-      });
+      setLoading(true);
+      try {
+        await postCreateStation({
+          name: form.stationName,
+          placement: form.stationPlacement,
+          stationEnergyType: form.stationEnergyType,
+          supportGovernment: form.stationSupport,
+          exploitationStart: new Date(form.stationDateOfExplotation),
+          countryId: finded.id,
+          regionId: form.stationRegion,
+        });
+        setLoading(false);
+        history.push("/create-eac");
+      } catch (e: any) {
+        setErrorMsg(e.data.message);
+        setLoading(false);
+      }
     }
   }
 
@@ -191,9 +208,16 @@ const CreateStation: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
+          <ErrorMessage message={errorMsg} />
         </Grid>
         <Grid container justifyContent="flex-end" sx={{ marginTop: "15px" }}>
-          <Button onClick={submitForm}>Submit</Button>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <Button sx={{ border: "1px solid " }} onClick={submitForm}>
+              Submit
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Dashboard>

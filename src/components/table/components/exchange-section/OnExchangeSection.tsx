@@ -14,6 +14,8 @@ export const SToggleBtn: SxProps = {
   "&[aria-pressed='true']": {
     color: colorForText,
   },
+  color: colorForText,
+  border: `1px solid ${colorForText}`,
 };
 
 const OnExchangeSection: React.FC<IOnExchangeSection> = ({ item }) => {

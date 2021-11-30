@@ -1,9 +1,11 @@
-import { Grid, TextField, Button } from "@mui/material";
+import { Grid, TextField, Button, CircularProgress } from "@mui/material";
 import Dashboard, { ISignature } from "../../../pages/dashboard/Dashboard";
 import Title from "../../texts/Title";
 import { TextStyles } from "../create-station/createStation.styles";
 import { ChangeEvent, useState } from "react";
 import { postCreateCompany } from "../../../config/api/api.service";
+import { useHistory } from "react-router-dom";
+import ErrorMessage from "../../error-message/ErrorMessage";
 
 interface IForm extends ISignature {
   companyName: string;
@@ -17,17 +19,30 @@ const initialState: IForm = {
 
 const CreateCompany: React.FC = () => {
   const [form, setForm] = useState<IForm>(initialState);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState([]);
 
-  const changeHandler = (e: ChangeEvent<HTMLInputElement>): void =>
+  const history = useHistory();
+
+  const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
     setForm((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
+  };
 
   async function submitForm() {
-    await postCreateCompany({
-      name: form.companyName,
-      registerNumber: form.companyRegisterNumber,
-    });
+    setLoading(true);
+    try {
+      await postCreateCompany({
+        name: form.companyName,
+        registerNumber: form.companyRegisterNumber,
+      });
+      setLoading(false);
+      history.push("/create-station");
+    } catch (e: any) {
+      setErrorMsg(e.data.message);
+      setLoading(false);
+    }
   }
 
   return (
@@ -49,8 +64,15 @@ const CreateCompany: React.FC = () => {
           value={form.companyRegisterNumber}
         />
       </Grid>
+      <ErrorMessage message={errorMsg} />
       <Grid container justifyContent="flex-end" sx={{ marginTop: "15px" }}>
-        <Button onClick={submitForm}>Submit</Button>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Button sx={{ border: "1px solid " }} onClick={submitForm}>
+            Submit
+          </Button>
+        )}
       </Grid>
     </Dashboard>
   );
