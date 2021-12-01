@@ -24,6 +24,7 @@ import { useState } from "react";
 import { postCreateStation } from "../../../config/api/api.service";
 import { useHistory } from "react-router-dom";
 import ErrorMessage from "../../error-message/ErrorMessage";
+import { responseHandler } from "../../../config/api/utils";
 
 interface IForm extends ISignature {
   stationEnergyType: string;
@@ -76,7 +77,7 @@ const CreateStation: React.FC = () => {
     if (finded) {
       setLoading(true);
       try {
-        await postCreateStation({
+        const data = await postCreateStation({
           name: form.stationName,
           placement: form.stationPlacement,
           stationEnergyType: form.stationEnergyType,
@@ -85,8 +86,8 @@ const CreateStation: React.FC = () => {
           countryId: finded.id,
           regionId: form.stationRegion,
         });
+        responseHandler(data, "create-eac", history);
         setLoading(false);
-        history.push("/create-eac");
       } catch (e: any) {
         setErrorMsg(e.data.message);
         setLoading(false);

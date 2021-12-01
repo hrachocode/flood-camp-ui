@@ -6,6 +6,7 @@ import { ChangeEvent, useState } from "react";
 import { postCreateCompany } from "../../../config/api/api.service";
 import { useHistory } from "react-router-dom";
 import ErrorMessage from "../../error-message/ErrorMessage";
+import { responseHandler } from "../../../config/api/utils";
 
 interface IForm extends ISignature {
   companyName: string;
@@ -33,12 +34,12 @@ const CreateCompany: React.FC = () => {
   async function submitForm() {
     setLoading(true);
     try {
-      await postCreateCompany({
+      const data = await postCreateCompany({
         name: form.companyName,
         registerNumber: form.companyRegisterNumber,
       });
       setLoading(false);
-      history.push("/create-station");
+      responseHandler(data, "create-station", history);
     } catch (e: any) {
       setErrorMsg(e.data.message);
       setLoading(false);
