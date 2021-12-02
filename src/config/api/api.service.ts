@@ -40,6 +40,11 @@ export const postCreateStation = async (body: ICreateStation): Promise<any> => {
   return res?.data;
 };
 
+export const getStation = async (): Promise<any> => {
+  const res = await httpClient.get(CREATE_STATION);
+  return res?.data;
+};
+
 export const postCreateEAC = async (body: ICreateEAC): Promise<any> => {
   const res = await httpClient.post(CREATE_EAC, body);
   return res?.data;

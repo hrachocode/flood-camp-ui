@@ -3,7 +3,7 @@ import DashboardWrapper from "../../components/dashboard-wrapper/DashboardWrappe
 import { MainGridStyles, MainInnerContainer } from "./dashboard.styles";
 
 export interface ISignature {
-  [x: string]: string | number;
+  [x: string]: string | number | any;
 }
 
 const Dashboard: React.FC = ({ children }) => {

@@ -22,6 +22,7 @@ export interface ICreateEAC {
   creationEnergyStartDate: Date;
   creationEnergyEndDate: Date;
   energyAmount: number;
+  stationId:  number
 }
 
 export interface IChangeAskAuctionState {
