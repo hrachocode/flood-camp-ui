@@ -18,10 +18,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   confirmBidToEAC,
+  getBalance,
   getBindedAsks,
   makeBid,
 } from "../../../../config/api/api.service";
-import { upadateEac } from "../../../../config/redux/main.slice";
+import { upadateEac, updateBalance } from "../../../../config/redux/main.slice";
 import {
   colorForText,
   TextStyles,
@@ -82,7 +83,7 @@ const BidsModal: React.FC<IBidsModal> = ({
   };
 
   const makeBidHandler = async () => {
-    const res = await makeBid({ price, eacsId: id });
+    const res = await makeBid({ eacsId: id, price });
     if (res) {
       setData((prev: any) => {
         if (prev) {
@@ -91,6 +92,10 @@ const BidsModal: React.FC<IBidsModal> = ({
           return [res];
         }
       });
+      const num = await getBalance();
+      if (num) {
+        dispatch(updateBalance(num));
+      }
     }
   };
 

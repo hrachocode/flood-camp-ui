@@ -8,3 +8,4 @@ export const BINDED_ASKS_TO_EACS = "/bindEACs";
 export const CONFIRM_BID = "/confirmAskEACs";
 export const MAKE_BID = "/eacsBind";
 export const ALL_AUCTIONS = "/ask";
+export const BALANCE = "api/auth/userBalance";

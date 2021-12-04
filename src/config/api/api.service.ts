@@ -9,6 +9,7 @@ import {
   MAKE_BID,
   SIGN_IN,
   SIGN_UP,
+  BALANCE
 } from "./api.endpoints";
 import {
   IAuthRequest,
@@ -42,6 +43,11 @@ export const postCreateStation = async (body: ICreateStation): Promise<any> => {
 
 export const getStation = async (): Promise<any> => {
   const res = await httpClient.get(CREATE_STATION);
+  return res?.data;
+};
+
+export const getBalance = async (): Promise<any> => {
+  const res = await httpClient.get(BALANCE);
   return res?.data;
 };
 

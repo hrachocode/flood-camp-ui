@@ -5,6 +5,7 @@ const mainSlice = createSlice({
   name: "main",
   initialState: {
     eacs: null as null | { userEACs: IEAC[]; allEACs: IEAC[] },
+    balance: 0
   },
   reducers: {
     setEacs(state, action) {
@@ -22,8 +23,11 @@ const mainSlice = createSlice({
         }
       }
     },
+    updateBalance:(state,action)=>{
+      state.balance=action.payload
+    }
   },
 });
 
-export const { setEacs, upadateEac } = mainSlice.actions;
+export const { setEacs, upadateEac, updateBalance } = mainSlice.actions;
 export default mainSlice.reducer;
